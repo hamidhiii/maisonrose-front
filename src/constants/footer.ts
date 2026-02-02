@@ -1,4 +1,4 @@
-import { Mail, Phone, Instagram, Facebook, Twitter, Youtube } from 'lucide-react';
+import { Instagram, Facebook, Twitter, Youtube } from 'lucide-react';
 
 export const FOOTER_DATA = {
     customerService: {
