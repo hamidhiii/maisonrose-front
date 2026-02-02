@@ -1,0 +1,53 @@
+{
+    "common": {
+        "shop": "Shop",
+        "about": "About",
+        "contact": "Contact",
+        "search": "Search",
+        "cart": "Cart",
+        "addToCart": "Add to Cart",
+        "quickView": "Quick View",
+        "newsletter": {
+            "title": "Join Our Newsletter",
+            "subtitle": "Subscribe to get special offers, free giveaways, and once-in-a-lifetime deals.",
+            "placeholder": "Enter your email",
+            "button": "Subscribe"
+        }
+    },
+    "home": {
+        "hero": {
+            "title": "Artisan Craftsmanship",
+            "subtitle": "Discover unique, hand-crafted pieces made with passion and precision.",
+            "cta": "Shop Collection"
+        },
+        "categories": {
+            "title": "Shop by Category",
+            "ceramics": "Ceramics",
+            "textiles": "Textiles",
+            "woodwork": "Woodwork",
+            "jewelry": "Jewelry"
+        },
+        "bestSellers": {
+            "title": "Featured Products",
+            "subtitle": "Hand-picked items just for you"
+        }
+    },
+    "checkout": {
+        "shippingInfo": "Shipping Information",
+        "fullName": "Full Name",
+        "phoneNumber": "Phone Number",
+        "region": "Region",
+        "selectRegion": "Select Region",
+        "address": "Address",
+        "paymentMethod": "Payment Method",
+        "placeOrder": "Place Order",
+        "orderSummary": "Order Summary",
+        "subtotal": "Subtotal",
+        "shipping": "Shipping",
+        "free": "Free",
+        "total": "Total",
+        "orderConfirmed": "Order Confirmed!",
+        "thankYou": "Thank you for your purchase. We will contact you shortly for delivery details.",
+        "redirecting": "Redirecting to home..."
+    }
+}

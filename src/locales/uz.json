@@ -1,0 +1,53 @@
+{
+    "common": {
+        "shop": "Do'kon",
+        "about": "Biz haqimizda",
+        "contact": "Aloqa",
+        "search": "Qidiruv",
+        "cart": "Savat",
+        "addToCart": "Savatga qo'shish",
+        "quickView": "Tez ko'rish",
+        "newsletter": {
+            "title": "Yangiliklarimizga a'zo bo'ling",
+            "subtitle": "Maxsus takliflar va chegirmalardan xabardor bo'lish uchun obuna bo'ling.",
+            "placeholder": "Emailingizni kiriting",
+            "button": "Obuna bo'lish"
+        }
+    },
+    "home": {
+        "hero": {
+            "title": "Qo'l mehnati san'ati",
+            "subtitle": "Ehtiros va aniqlik bilan yaratilgan noyob qo'l mehnati namunalarini kashf eting.",
+            "cta": "To'plamni ko'rish"
+        },
+        "categories": {
+            "title": "Kategoriyalar bo'yicha xarid qiling",
+            "ceramics": "Keramika",
+            "textiles": "To'qimachilik",
+            "woodwork": "Yog'och o'ymakorligi",
+            "jewelry": "Zargarlik buyumlari"
+        },
+        "bestSellers": {
+            "title": "Saralangan mahsulotlar",
+            "subtitle": "Faqat siz uchun tanlangan mahsulotlar"
+        }
+    },
+    "checkout": {
+        "shippingInfo": "Yetkazib berish ma'lumotlari",
+        "fullName": "To'liq ism",
+        "phoneNumber": "Telefon raqami",
+        "region": "Viloyat",
+        "selectRegion": "Viloyatni tanlang",
+        "address": "Manzil",
+        "paymentMethod": "To'lov usuli",
+        "placeOrder": "Buyurtma berish",
+        "orderSummary": "Buyurtma tafsilotlari",
+        "subtotal": "Jami",
+        "shipping": "Yetkazib berish",
+        "free": "Bepul",
+        "total": "Umumiy",
+        "orderConfirmed": "Buyurtma tasdiqlandi!",
+        "thankYou": "Xaridingiz uchun rahmat. Tez orada yetkazib berish tafsilotlari bo'yicha siz bilan bog'lanamiz.",
+        "redirecting": "Bosh sahifaga qaytilmoqda..."
+    }
+}
