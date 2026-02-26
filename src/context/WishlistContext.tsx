@@ -4,7 +4,7 @@ interface WishlistItem {
     id: number;
     name: string;
     price: string;
-    image: string;
+    image: string | null;
 }
 
 interface WishlistContextType {

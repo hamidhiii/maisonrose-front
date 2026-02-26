@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { featuredProducts } from "../../constants/homeData";
+import { productService } from "../../services/productService";
+import type { Product } from "../../services/productService";
 import ProductCard from "../ui/ProductCard";
 
 const ProductSkeleton = () => (
@@ -17,13 +18,24 @@ const ProductSkeleton = () => (
 const BestSellers: React.FC = () => {
     const { t } = useTranslation();
     const [currentPage, setCurrentPage] = useState(0);
+    const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const itemsPerPage = 4;
-    const totalPages = Math.ceil(featuredProducts.length / itemsPerPage);
+    const totalPages = Math.ceil(products.length / itemsPerPage);
 
     useEffect(() => {
-        const timer = setTimeout(() => setLoading(false), 1000);
-        return () => clearTimeout(timer);
+        const fetchProducts = async () => {
+            try {
+                const data = await productService.getProducts();
+                setProducts(data);
+            } catch (error) {
+                console.error('Failed to fetch products:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProducts();
     }, []);
 
     const nextPage = () => {
@@ -36,7 +48,7 @@ const BestSellers: React.FC = () => {
 
     const getCurrentItems = () => {
         const start = currentPage * itemsPerPage;
-        return featuredProducts.slice(start, start + itemsPerPage);
+        return products.slice(start, start + itemsPerPage);
     };
 
     return (
@@ -74,7 +86,10 @@ const BestSellers: React.FC = () => {
                         {getCurrentItems().map((product, index) => (
                             <ProductCard
                                 key={`${product.id}-${currentPage}`}
-                                product={product}
+                                product={{
+                                    ...product,
+                                    price: `$${product.price}`
+                                }}
                                 index={index}
                             />
                         ))}
@@ -82,58 +97,62 @@ const BestSellers: React.FC = () => {
                 )}
 
                 {/* Navigation Arrows */}
-                <div className="flex justify-center gap-4 mt-10">
-                    <button
-                        onClick={prevPage}
-                        className="w-12 h-12 border-2 border-gray-300 flex items-center hover:cursor-pointer justify-center hover:bg-gray-100 transition-colors"
-                    >
-                        <svg
-                            className="w-5 h-5 text-gray-600"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
+                {totalPages > 1 && (
+                    <div className="flex justify-center gap-4 mt-10">
+                        <button
+                            onClick={prevPage}
+                            className="w-12 h-12 border-2 border-gray-300 flex items-center hover:cursor-pointer justify-center hover:bg-gray-100 transition-colors"
                         >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M15 19l-7-7 7-7"
-                            />
-                        </svg>
-                    </button>
-                    <button
-                        onClick={nextPage}
-                        className="w-12 h-12 border-2 border-gray-300 flex items-center hover:cursor-pointer justify-center hover:bg-gray-100 transition-colors"
-                    >
-                        <svg
-                            className="w-5 h-5 text-gray-600"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
+                            <svg
+                                className="w-5 h-5 text-gray-600"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M15 19l-7-7 7-7"
+                                />
+                            </svg>
+                        </button>
+                        <button
+                            onClick={nextPage}
+                            className="w-12 h-12 border-2 border-gray-300 flex items-center hover:cursor-pointer justify-center hover:bg-gray-100 transition-colors"
                         >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M9 5l7 7-7 7"
-                            />
-                        </svg>
-                    </button>
-                </div>
+                            <svg
+                                className="w-5 h-5 text-gray-600"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M9 5l7 7-7 7"
+                                />
+                            </svg>
+                        </button>
+                    </div>
+                )}
 
                 {/* Pagination Dots */}
-                <div className="flex justify-center gap-2 mt-6">
-                    {Array.from({ length: totalPages }).map((_, index) => (
-                        <button
-                            key={index}
-                            onClick={() => setCurrentPage(index)}
-                            className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentPage
-                                ? "bg-gray-800 w-8"
-                                : "bg-gray-300 hover:bg-gray-400"
-                                }`}
-                        />
-                    ))}
-                </div>
+                {totalPages > 1 && (
+                    <div className="flex justify-center gap-2 mt-6">
+                        {Array.from({ length: totalPages }).map((_, index) => (
+                            <button
+                                key={index}
+                                onClick={() => setCurrentPage(index)}
+                                className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentPage
+                                    ? "bg-gray-800 w-8"
+                                    : "bg-gray-300 hover:bg-gray-400"
+                                    }`}
+                            />
+                        ))}
+                    </div>
+                )}
             </div>
         </section>
     );

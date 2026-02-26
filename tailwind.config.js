@@ -15,7 +15,7 @@ export default {
         "surface-dark": "#2d1b20",
       },
       fontFamily: {
-        "display": ["Noto Serif", "serif"]
+        "display": ["Roboto", "sans-serif"]
       },
       borderRadius: {
         "DEFAULT": "0.5rem",

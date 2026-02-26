@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { featuredProducts } from '../constants/homeData';
+import { productService } from '../services/productService';
+import type { Product } from '../services/productService';
 import { useCart } from '../context/CartContext';
 
 const ProductDetail: React.FC = () => {
@@ -10,8 +11,32 @@ const ProductDetail: React.FC = () => {
     const { t } = useTranslation();
     const { addToCart } = useCart();
     const navigate = useNavigate();
+    const [product, setProduct] = useState<Product | null>(null);
+    const [loading, setLoading] = useState(true);
 
-    const product = featuredProducts.find((p) => p.id === Number(id));
+    useEffect(() => {
+        const fetchProduct = async () => {
+            if (!id) return;
+            try {
+                const data = await productService.getProduct(Number(id));
+                setProduct(data);
+            } catch (error) {
+                console.error('Failed to fetch product:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProduct();
+    }, [id]);
+
+    if (loading) {
+        return (
+            <div className="py-20 px-6 md:px-12 lg:px-16 bg-white flex justify-center items-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            </div>
+        );
+    }
 
     if (!product) {
         return (
@@ -24,6 +49,11 @@ const ProductDetail: React.FC = () => {
         );
     }
 
+    const formattedProduct = {
+        ...product,
+        price: `$${product.price}`
+    };
+
     return (
         <div className="py-20 px-6 md:px-12 lg:px-16 bg-white">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-6xl mx-auto">
@@ -33,8 +63,8 @@ const ProductDetail: React.FC = () => {
                     className="aspect-square overflow-hidden rounded-2xl bg-gray-100"
                 >
                     <img
-                        src={product.image}
-                        alt={product.name}
+                        src={productService.getFullImageUrl(formattedProduct.image, formattedProduct.name, formattedProduct.category_name)}
+                        alt={formattedProduct.name}
                         className="w-full h-full object-cover"
                     />
                 </motion.div>
@@ -49,25 +79,25 @@ const ProductDetail: React.FC = () => {
                         <span className="mx-2">/</span>
                         <button onClick={() => navigate('/shop')} className="hover:text-primary">{t('common.shop')}</button>
                         <span className="mx-2">/</span>
-                        <span className="text-gray-900">{product.name}</span>
+                        <span className="text-gray-900">{formattedProduct.name}</span>
                     </nav>
 
-                    <h1 className="text-4xl font-bold text-gray-900 mb-4">{product.name}</h1>
-                    <p className="text-3xl font-light text-primary mb-6">{product.price}</p>
+                    <h1 className="text-4xl font-bold text-gray-900 mb-4">{formattedProduct.name}</h1>
+                    <p className="text-3xl font-light text-primary mb-6">{formattedProduct.price}</p>
 
                     <div className="prose prose-sm text-gray-600 mb-8">
                         <p>
-                            Experience the finest quality with our {product.name}. Hand-crafted with attention to detail and premium materials, this piece is designed to elevate your lifestyle.
+                            {formattedProduct.description || `Experience the finest quality with our ${formattedProduct.name}. Hand-crafted with attention to detail and premium materials, this piece is designed to elevate your lifestyle.`}
                         </p>
                     </div>
 
                     <div className="flex gap-4">
                         <button
                             onClick={() => addToCart({
-                                id: product.id,
-                                name: product.name,
-                                price: product.price,
-                                image: product.image,
+                                id: formattedProduct.id,
+                                name: formattedProduct.name,
+                                price: formattedProduct.price,
+                                image: formattedProduct.image,
                             })}
                             className="flex-1 bg-primary text-white py-4 rounded-full font-bold uppercase tracking-widest hover:bg-primary/90 transition-colors"
                         >

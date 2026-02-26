@@ -4,13 +4,15 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
+import { productService } from '../../services/productService';
 
 interface ProductCardProps {
     product: {
         id: number;
         name: string;
         price: string;
-        image: string;
+        image: string | null;
+        category_name?: string;
     };
     index?: number;
 }
@@ -33,7 +35,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) => {
         >
             <div className="relative w-full aspect-square overflow-hidden bg-gray-100">
                 <motion.img
-                    src={product.image}
+                    src={productService.getFullImageUrl(product.image, product.name, product.category_name)}
                     alt={product.name}
                     className="w-full h-full object-cover"
                     animate={{

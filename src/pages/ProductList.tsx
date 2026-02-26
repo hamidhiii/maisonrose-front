@@ -1,10 +1,36 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { featuredProducts } from '../constants/homeData';
+import { productService } from '../services/productService';
+import type { Product } from '../services/productService';
 import ProductCard from '../components/ui/ProductCard';
 
 const ProductList: React.FC = () => {
     const { t } = useTranslation();
+    const [products, setProducts] = useState<Product[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const data = await productService.getProducts();
+                setProducts(data);
+            } catch (error) {
+                console.error('Failed to fetch products:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProducts();
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="py-20 px-6 md:px-12 lg:px-16 bg-white flex justify-center items-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            </div>
+        );
+    }
 
     return (
         <div className="py-20 px-6 md:px-12 lg:px-16 bg-white">
@@ -14,10 +40,13 @@ const ProductList: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                {featuredProducts.map((product, index) => (
+                {products.map((product, index) => (
                     <ProductCard
                         key={product.id}
-                        product={product}
+                        product={{
+                            ...product,
+                            price: `$${product.price}` // Adding $ if backend doesn't provide it
+                        }}
                         index={index}
                     />
                 ))}

@@ -1,7 +1,9 @@
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { productService } from "../../services/productService";
+import type { Category } from "../../services/productService";
 
 interface CategoryCardProps {
     title: string;
@@ -77,37 +79,23 @@ const CategoryGrid: React.FC = () => {
     const { t } = useTranslation();
     const [hoveredId, setHoveredId] = useState<number | null>(null);
     const [currentPage, setCurrentPage] = useState(0);
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    const categories = [
-        {
-            id: 1,
-            title: t('home.categories.ceramics'),
-            slug: 'ceramics',
-            imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuAA487HS4c4-ufQbYp6gZte_r7DvhFyNbKNKrMOanK37eOTXciVMv_X-1dTBFeO9iutNx_MYOZDSHJ_CuL9AzRh9cfJY9EGeC9R4xHzAK3KOUQls556Gt9JDdxSYOwgjjrsAkv740KT3UwNNIAF_4BzbJhRBQXjjV-tx7Wg79Qf-ATjrqHMMsEIwKcZHyDTB_d0fCu9-oVzwPUsVjSR_1d5OOw4qQKdSQI-QSFFkR3RIxk7wD6bSvxp7VLwwuKcG88Z1EnBmazH_g",
-            imageAlt: "Stack of handmade soap bars with lavender sprigs"
-        },
-        {
-            id: 2,
-            title: t('home.categories.textiles'),
-            slug: 'textiles',
-            imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuB63ywS4Ee6KYSY1DqAmJ1jE-xw0Tghre2Cfe6J6vNZlmBD_s_VFcDT7f5B448KkOwja5R-H7J6wqJ6pp0DTLJcoSdOvt9z3hLwI0qhsZ-HcWBthNDn272zZZqdPDc9zLacyHrbhIvahJ9eq9ELf2IPbNQmpQ4eOq4bgnHFJDAzAEEGGRkfK984e1Iys5n7JkOG42gx1Id56E9EC59cMxSXpUF9vJYVQt0RNfxdhRhVnBAdCNpK4GMAqe2O_EA5CWdSGBUf37wing",
-            imageAlt: "Aromatic candle burning softly in a glass jar"
-        },
-        {
-            id: 3,
-            title: t('home.categories.woodwork'),
-            slug: 'woodwork',
-            imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuBDAu6emjjomEmD_sxxhvCMOluGT9lTKrwMKgmPmMrzc2-gat_3_C0-4QouvD0KsgfSJloVLDepqxOLmHLlTTR059Qdvg9J_kTSpnRuVvgZErk4xVs7s_WKyuDudEhmJjv6wpf41M2fnB2p6Y84iXancu6tyX-wlatkc7b_J_PHkb6X9UFEgLFqcjCXzjNdig0wtYMC7Qrd5-VctnFci7Hdb5ZOlOEkTKVa7vcrrrh-VQKWu3bC6VJqaXmBYSit-ujBjQpn4Pqfwg",
-            imageAlt: "Beautifully packaged gift box with cosmetics"
-        },
-        {
-            id: 4,
-            title: t('home.categories.jewelry'),
-            slug: 'jewelry',
-            imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuDSKFdkvY220EHhtYN4GTqwnsC_DHyXhro9lBFnF9iZKntZHYiugwT3yKg-ip6Mjos3QZvKaKrNBb2gL7vfjjPmG4B4c_jbIEaFGEOaRcqqALQUMGcP1wCQuprrOej6l_m2MOqA2R0TemaizFAFwRzxzYi3ZTjAgDjH7IMjUZu19VvjMCD5yeIiUDXUP6x4utlAltQDLb3zO3HtoAe7JtVU2swrimqaicI4Jqsxw6lXE9SMfGisSDyLc9I4yDSAqAn4NvYAtzVW1A",
-            imageAlt: "Spa kit with towel soap and oil"
-        }
-    ];
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const data = await productService.getCategories();
+                setCategories(data);
+            } catch (error) {
+                console.error('Failed to fetch categories:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchCategories();
+    }, []);
 
     const itemsPerPage = 4;
     const totalPages = Math.ceil(categories.length / itemsPerPage);
@@ -124,6 +112,8 @@ const CategoryGrid: React.FC = () => {
         const start = currentPage * itemsPerPage;
         return categories.slice(start, start + itemsPerPage);
     };
+
+    if (loading) return null;
 
     return (
         <section className="py-20 bg-white">
@@ -154,10 +144,10 @@ const CategoryGrid: React.FC = () => {
                         <CategoryCard
                             key={`${category.id}-${currentPage}`}
                             id={category.id}
-                            title={category.title}
+                            title={t(`home.categories.${category.slug}`) || category.name}
                             slug={category.slug}
-                            imageUrl={category.imageUrl}
-                            imageAlt={category.imageAlt}
+                            imageUrl={productService.getFullImageUrl(category.image ?? null, category.name)}
+                            imageAlt={category.name}
                             hoveredId={hoveredId}
                             onHover={setHoveredId}
                         />
