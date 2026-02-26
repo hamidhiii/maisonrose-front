@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { useWishlist } from '../context/WishlistContext';
+import { productService } from '../services/productService';
 
 const Wishlist: React.FC = () => {
     const { t } = useTranslation();
@@ -66,7 +67,7 @@ const Wishlist: React.FC = () => {
                             <Link to={`/product/${item.id}`} className="block">
                                 <div className="relative aspect-square overflow-hidden bg-gray-100">
                                     <img
-                                        src={item.image}
+                                        src={productService.getFullImageUrl(item.image, item.name)}
                                         alt={item.name}
                                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                     />

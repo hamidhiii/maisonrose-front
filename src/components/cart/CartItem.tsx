@@ -1,13 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useCart } from '../../context/CartContext';
+import { productService } from '../../services/productService';
 
 interface CartItemProps {
     item: {
         id: number;
         name: string;
         price: string;
-        image: string;
+        image: string | null;
         quantity: number;
     };
 }
@@ -24,7 +25,7 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
             className="flex flex-col sm:flex-row items-center gap-6 p-6 bg-white rounded-3xl shadow-sm"
         >
             <div className="size-32 rounded-2xl overflow-hidden bg-gray-100 flex-shrink-0">
-                <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                <img src={productService.getFullImageUrl(item.image, item.name)} alt={item.name} className="w-full h-full object-cover" />
             </div>
             <div className="flex-1 text-center sm:text-left">
                 <h3 className="text-xl font-medium text-gray-800 mb-1">{item.name}</h3>
